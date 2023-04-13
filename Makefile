@@ -140,6 +140,7 @@ clean: ## cleanup all generated assets
 image-sf-base:
 	temp=`mktemp -d` && \
 	cp Dockerfile.sf.base $$temp/Dockerfile && \
+	cp sources.list.ubuntu $$temp/sources.list && \
 	docker build -t $(IMAGE_BASE_SIT) $$temp
 	docker push $(IMAGE_BASE_SIT)
 	rm -rf $$temp
