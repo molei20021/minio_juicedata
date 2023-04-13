@@ -9,6 +9,7 @@ VERSION ?= $(shell git describe --tags)
 TAG ?= "minio/minio:$(VERSION)"
 
 IMAGE_BASE_SIT="artifactory-yun.sit.sf-express.com/testdockersit/015inc-aiplat-core/juicefscommon/gateway-base:0.1"
+IMAGE_SIT="artifactory-yun.sit.sf-express.com/testdockersit/015inc-aiplat-core/juicefscommon/gateway:0.1"
 
 all: build
 
@@ -144,3 +145,7 @@ image-sf-base:
 	docker build -t $(IMAGE_BASE_SIT) $$temp
 	docker push $(IMAGE_BASE_SIT)
 	rm -rf $$temp
+
+image-sf: build checks ## builds minio docker container
+	@echo "Building minio docker image '$(IMAGE_SIT)'"
+	@docker build -q --no-cache -t $(IMAGE_SIT) . -f Dockerfile.sf
