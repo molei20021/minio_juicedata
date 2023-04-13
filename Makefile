@@ -8,6 +8,8 @@ GOOS := $(shell go env GOOS)
 VERSION ?= $(shell git describe --tags)
 TAG ?= "minio/minio:$(VERSION)"
 
+IMAGE_BASE_SIT="artifactory-yun.sit.sf-express.com/testdockersit/015inc-aiplat-core/juicefscommon/gateway-base:0.1"
+
 all: build
 
 checks: ## check dependencies
@@ -134,3 +136,10 @@ clean: ## cleanup all generated assets
 	@rm -rvf build
 	@rm -rvf release
 	@rm -rvf .verify*
+
+image-sf-base:
+	temp=`mktemp -d` && \
+	cp Dockerfile.sf.base $$temp/Dockerfile && \
+	docker build -t $(IMAGE_BASE_SIT) $$temp
+	docker push $(IMAGE_BASE_SIT)
+	rm -rf $$temp
