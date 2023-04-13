@@ -10,6 +10,7 @@ TAG ?= "minio/minio:$(VERSION)"
 
 IMAGE_BASE_SIT="artifactory-yun.sit.sf-express.com/testdockersit/015inc-aiplat-core/juicefscommon/gateway-base:0.1"
 IMAGE_SIT="artifactory-yun.sit.sf-express.com/testdockersit/015inc-aiplat-core/juicefscommon/gateway:0.1"
+IMAGE_PROD="artifactory.sf-express.com/dockersit/015inc-aiplat-core/juicefscommon/gateway:0.1"
 
 all: build
 
