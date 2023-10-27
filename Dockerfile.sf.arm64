@@ -1,0 +1,10 @@
+FROM artifactory-yun.sit.sf-express.com/testdockersit/015inc-aiplat-core/juicefscommon/gateway-base:0.1-arm64
+
+COPY ./minio /usr/bin/minio
+COPY dockerscripts/docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
+
+VOLUME ["/data"]
+
+CMD ["minio"]

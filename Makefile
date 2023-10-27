@@ -150,3 +150,19 @@ image-sf-base:
 image-sf: build checks ## builds minio docker container
 	@echo "Building minio docker image '$(IMAGE_SIT)'"
 	@docker build -q --no-cache -t $(IMAGE_SIT) . -f Dockerfile.sf
+
+image-sf-base-arm64:
+	temp=`mktemp -d` && \
+	cp Dockerfile.sf.arm64.base $$temp/Dockerfile && \
+	cp sources.list.ubuntu.2004 $$temp/sources.list && \
+	docker buildx build -t $(IMAGE_BASE_SIT)-arm64 --platform linux/arm64 $$temp
+	docker push $(IMAGE_BASE_SIT)-arm64
+	rm -rf $$temp
+
+image-sf-arm64:
+	temp=`mktemp -d` && \
+	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o $$temp/minio *.go && \
+	cp Dockerfile.sf.arm64 $$temp/Dockerfile && \
+	cp -r dockerscripts $$temp && \
+	docker buildx build -t ${IMAGE_SIT}-arm64 --platform linux/arm64 $$temp && \
+	rm -rf $$temp
