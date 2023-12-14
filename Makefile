@@ -161,8 +161,9 @@ image-sf-base-arm64:
 
 image-sf-arm64:
 	temp=`mktemp -d` && \
-	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o $$temp/minio *.go && \
+	# CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o $$temp/minio *.go && \
 	cp Dockerfile.sf.arm64 $$temp/Dockerfile && \
+	cp resources/minio $$temp && \
 	cp -r dockerscripts $$temp && \
 	docker buildx build -t ${IMAGE_SIT}-arm64 --platform linux/arm64 $$temp && \
 	rm -rf $$temp
