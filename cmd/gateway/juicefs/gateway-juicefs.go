@@ -19,14 +19,6 @@ package juicefs
 import (
 	"context"
 	"fmt"
-	"github.com/google/uuid"
-	"github.com/juicedata/juicefs/pkg/fs" //nolint:gofumpt
-	"github.com/juicedata/juicefs/pkg/meta"
-	"github.com/juicedata/juicefs/pkg/utils"
-	"github.com/juicedata/juicefs/pkg/version"
-	"github.com/minio/cli"
-	"github.com/minio/madmin-go"
-	minio "github.com/minio/minio/cmd"
 	"io"
 	"net/http"
 	"os"
@@ -37,6 +29,15 @@ import (
 	"sync"
 	"syscall"
 	"time"
+
+	"github.com/google/uuid"
+	"github.com/juicedata/juicefs/pkg/fs" //nolint:gofumpt
+	"github.com/juicedata/juicefs/pkg/meta"
+	"github.com/juicedata/juicefs/pkg/utils"
+	"github.com/juicedata/juicefs/pkg/version"
+	"github.com/minio/cli"
+	"github.com/minio/madmin-go"
+	minio "github.com/minio/minio/cmd"
 
 	"github.com/juicedata/juicefs/pkg/vfs"
 	"github.com/minio/minio-go/v7/pkg/s3utils"
@@ -560,6 +561,14 @@ func (n *JfsObjects) CopyObject(ctx context.Context, srcBucket, srcObject, dstBu
 		return
 	}
 	eno = n.fs.Rename(mctx, tmp, dst, 0)
+	if eno == syscall.ENOENT {
+		if err = n.mkdirAll(ctx, path.Dir(dst), os.FileMode(n.gConf.DirMode)); err != nil {
+			logger.Errorf("mkdirAll %s: %s", path.Dir(dst), err)
+			err = jfsToObjectErr(ctx, err, dstBucket, dstObject)
+			return
+		}
+		eno = n.fs.Rename(mctx, tmp, dst, 0)
+	}
 	if eno != 0 {
 		err = jfsToObjectErr(ctx, eno, srcBucket, srcObject)
 		logger.Errorf("rename %s to %s: %s", tmp, dst, err)

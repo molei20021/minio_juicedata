@@ -8,9 +8,9 @@ GOOS := $(shell go env GOOS)
 VERSION ?= $(shell git describe --tags)
 TAG ?= "minio/minio:$(VERSION)"
 
-IMAGE_BASE_SIT="artifactory-yun.sit.sf-express.com/testdockersit/015inc-aiplat-core/juicefscommon/gateway-base:0.1"
-IMAGE_SIT="artifactory-yun.sit.sf-express.com/testdockersit/015inc-aiplat-core/juicefscommon/gateway:0.1"
-IMAGE_PROD="artifactory.sf-express.com/dockersit/015inc-aiplat-core/juicefscommon/gateway:0.1"
+IMAGE_BASE_SIT="artifactory-yun.sit.sf-express.com/testdockersit/015inc-aiplat-core/juicefscommon/gateway-base:0.2"
+IMAGE_SIT="artifactory-yun.sit.sf-express.com/testdockersit/015inc-aiplat-core/juicedata/juicefs-gateway:0.7.alpha1"
+IMAGE_PROD="artifactory.sf-express.com/dockersit/015inc-aiplat-core/juicedata/juicefs-gateway:0.7.alpha1"
 
 all: build
 
@@ -142,7 +142,7 @@ clean: ## cleanup all generated assets
 image-sf-base:
 	temp=`mktemp -d` && \
 	cp Dockerfile.sf.base $$temp/Dockerfile && \
-	cp sources.list.ubuntu $$temp/sources.list && \
+	cp sources.list.ubuntu.2004 $$temp/sources.list && \
 	docker build -t $(IMAGE_BASE_SIT) $$temp
 	docker push $(IMAGE_BASE_SIT)
 	rm -rf $$temp
